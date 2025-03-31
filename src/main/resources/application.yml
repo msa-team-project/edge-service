@@ -1,0 +1,53 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: edge-service
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://localhost:9002/auths
+          predicates:
+            - Path=/auths/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: authCircuitBreaker
+                fallbackUri: forward:/service-fallback
+        - id: menu-service
+          uri: http://localhost:9003/menus
+          predicates:
+            - Path=/menus/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: menuCircuitBreaker
+                fallbackUri: forward:/service-fallback
+        - id: order-service
+          uri: http://localhost:9004/orders
+          predicates:
+            - Path=/orders/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: orderCircuitBreaker
+                fallbackUri: forward:/service-fallback
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        permitted-number-of-calls-in-half-open-state: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 15000
+  timelimiter:
+    configs:
+      default:
+        timeout-duration:
+          seconds: 5
+
+msa:
+  auth-service-url: http://localhost:9002
