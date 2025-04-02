@@ -36,6 +36,15 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/service-fallback
+        - id: dispatcher-service
+          uri: http://localhost:9005/dispatchers
+          predicates:
+            - Path=/dispatchers/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: dispatcherCircuitBreaker
+                fallbackUri: forward:/service-fallback
 resilience4j:
   circuitbreaker:
     configs:
@@ -49,5 +58,6 @@ resilience4j:
         timeout-duration:
           seconds: 5
 
-msa:
+sandit:
   auth-service-url: http://localhost:9002
+  dispatcher-service-url: http://localhost:9005
