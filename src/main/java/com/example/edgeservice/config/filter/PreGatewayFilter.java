@@ -49,10 +49,16 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
             return authServiceClient.validToken(token)
                     .flatMap(statusNum -> {
                         if(statusNum == 2){
+                            // 토큰 만료
                             exchange.getResponse().setStatusCode(HttpStatusCode.valueOf(config.getAuthenticationTimeoutCode()));
                             return exchange.getResponse().setComplete();
                         } else if (statusNum == 3 || statusNum == -1) {
+                            // 토큰 무효
                             exchange.getResponse().setStatusCode(INTERNAL_SERVER_ERROR);
+                            return exchange.getResponse().setComplete();
+                        }else if (statusNum == 0) {
+                            // 토큰 없음
+                            exchange.getResponse().setStatusCode(UNAUTHORIZED);
                             return exchange.getResponse().setComplete();
                         }
 
