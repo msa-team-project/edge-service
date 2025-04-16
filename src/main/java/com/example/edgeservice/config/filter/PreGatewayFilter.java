@@ -33,7 +33,7 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
             String path = exchange.getRequest().getURI().getPath();
             log.info("Request path: {}", path);
 
-            if (path.equals("/auths/login") || path.equals("/auths/join") || path.equals("/auths/login/oauth")) {
+            if (path.equals("/auths/login") || path.equals("/auths/join") || path.equals("/auths/login/oauth") || path.equals("/auths/logout")) {
                 // 로그인과 회원가입 요청에는 토큰 검증을 생략
                 return chain.filter(exchange);
             }
