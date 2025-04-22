@@ -45,6 +45,16 @@ spring:
               args:
                 name: dispatcherCircuitBreaker
                 fallbackUri: forward:/service-fallback
+        - id: store-service
+          uri: http://localhost:9007/stores
+          predicates:
+            - Path=/stores/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: storeCircuitBreaker
+                fallbackUri: forward:/service-fallback
 resilience4j:
   circuitbreaker:
     configs:
