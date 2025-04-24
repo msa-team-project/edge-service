@@ -45,26 +45,17 @@ spring:
               args:
                 name: dispatcherCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: geocode-service-service
-          uri: http://localhost:9000
+        - id: review-service
+          uri: http://localhost:9006/reviews
           predicates:
-            - Path=/api/geocode**
+            - Path=/reviews/**
           filters:
+            - name: PreGatewayFilter
             - name: CircuitBreaker
               args:
-                name: dispatcherCircuitBreaker
+                name: menuCircuitBreaker
                 fallbackUri: forward:/service-fallback
 
-
-      globalcors:
-        corsConfigurations:
-          # 모든 경로
-          '[/**]':
-            # 프론트 개발 서버 주소
-            allowedOrigins: "http://localhost:9000"
-            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
-            allowedHeaders: "*"
-            allowCredentials: true
 resilience4j:
   circuitbreaker:
     configs:
