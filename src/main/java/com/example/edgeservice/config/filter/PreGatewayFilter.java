@@ -40,7 +40,10 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
                     path.equals("/auths/refresh") ||
                     path.equals("/auths/re/tokens") ||
                     path.startsWith("/auths/email") ||
-                    path.startsWith("/api/geocode")
+                    path.startsWith("/api/geocode") || 
+                    path.equals("/orders/prepare") || 
+                    path.equals("/orders/update-fail") || 
+                    path.equals("/orders/update-success")
                     ) {
                 // 로그인과 회원가입 요청에는 토큰 검증을 생략
                 return chain.filter(exchange);
