@@ -79,4 +79,4 @@ resilience4j:
           seconds: 5
 
 sandit:
-  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002/auths}
+  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002}
