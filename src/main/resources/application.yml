@@ -79,4 +79,5 @@ resilience4j:
           seconds: 5
 
 sandit:
-  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002/auths}
+  # 챗지피디 권고에 의한 주소 수정
+  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002}
