@@ -37,9 +37,9 @@ spring:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: delivery-service
-          uri: ${DELIVERY_SERVICE_URL:http://localhost:9005/deliverys}
+          uri: ${DELIVERY_SERVICE_URL:http://localhost:9005/deliveries}
           predicates:
-            - Path=/deliverys/**
+            - Path=/deliveries/**
           filters:
             - name: CircuitBreaker
               args:
