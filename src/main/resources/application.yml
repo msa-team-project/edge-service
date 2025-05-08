@@ -32,6 +32,7 @@ spring:
           predicates:
             - Path=/orders/**
           filters:
+            - name: PreGatewayFilter
             - name: CircuitBreaker
               args:
                 name: orderCircuitBreaker
@@ -45,10 +46,10 @@ spring:
               args:
                 name: dispatcherCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: review-service
-          uri: http://localhost:9006/reviews
+        - id: store-service
+          uri: http://localhost:9007/stores
           predicates:
-            - Path=/reviews/**
+            - Path=/stores/**
           filters:
             - name: PreGatewayFilter
             - name: CircuitBreaker
