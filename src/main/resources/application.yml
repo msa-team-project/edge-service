@@ -32,6 +32,7 @@ spring:
           predicates:
             - Path=/orders/**
           filters:
+            - name: PreGatewayFilter
             - name: CircuitBreaker
               args:
                 name: orderCircuitBreaker
@@ -48,7 +49,7 @@ spring:
         - id: review-service
           uri: ${REVIEW_SERVICE_URL:http://localhost:9006/reviews}
           predicates:
-            - Path=/reviews/**
+            - Path=/stores/**
           filters:
             - name: PreGatewayFilter
             - name: CircuitBreaker
