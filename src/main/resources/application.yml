@@ -36,25 +36,15 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: dispatcher-service
-          uri: http://localhost:9005/dispatchers
+        - id: delivery-service
+          uri: ${DELIVERY_SERVICE_URL:http://localhost:9005/deliveries}
           predicates:
-            - Path=/dispatchers/**
+            - Path=/deliveries/**
           filters:
             - name: CircuitBreaker
               args:
-                name: dispatcherCircuitBreaker
+                name: deliveryCircuitBreaker
                 fallbackUri: forward:/service-fallback
-#        - id: review-service
-#          uri: http://localhost:9006/reviews
-#          predicates:
-#            - Path=/reviews/**
-#          filters:
-#            - name: PreGatewayFilter
-#            - name: CircuitBreaker
-#              args:
-#                name: menuCircuitBreaker
-#                fallbackUri: forward:/service-fallback
         - id: chat-service
           uri: http://localhost:9006/chat
           predicates:
@@ -65,7 +55,16 @@ spring:
               args:
                 name: chatCircuitBreaker
                 fallbackUri: forward:/service-fallback
-
+        - id: store-service
+          uri: http://localhost:9007/stores
+          predicates:
+            - Path=/stores/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: storeCircuitBreaker
+                fallbackUri: forward:/service-fallback
 
 
 resilience4j:
@@ -82,4 +81,3 @@ resilience4j:
           seconds: 5
 sandit:
   auth-service-url: http://localhost:9002
-  dispatcher-service-url: http://localhost:9005
