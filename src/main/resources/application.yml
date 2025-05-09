@@ -8,7 +8,7 @@ spring:
     gateway:
       routes:
         - id: auth-service
-          uri: http://localhost:9002/auths
+          uri: ${AUTH_SERVICE_URL:http://localhost:9002/auths}
           predicates:
             - Path=/auths/**
           filters:
@@ -18,7 +18,7 @@ spring:
                 name: authCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: menu-service
-          uri: http://localhost:9003/menus
+          uri: ${MENU_SERVICE_URL:http://localhost:9003/menus}
           predicates:
             - Path=/menus/**
           filters:
@@ -28,7 +28,7 @@ spring:
                 name: menuCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: order-service
-          uri: http://localhost:9004/orders
+          uri: ${ORDER_SERVICE_URL:http://localhost:9004/orders}
           predicates:
             - Path=/orders/**
           filters:
@@ -37,26 +37,35 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: dispatcher-service
-          uri: http://localhost:9005/dispatchers
+        - id: delivery-service
+          uri: ${DELIVERY_SERVICE_URL:http://localhost:9005/deliveries}
           predicates:
-            - Path=/dispatchers/**
+            - Path=/deliveries/**
           filters:
             - name: CircuitBreaker
               args:
-                name: dispatcherCircuitBreaker
+                name: deliveryCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: store-service
-          uri: http://localhost:9007/stores
+        - id: review-service
+          uri: ${REVIEW_SERVICE_URL:http://localhost:9006/reviews}
           predicates:
             - Path=/stores/**
           filters:
             - name: PreGatewayFilter
             - name: CircuitBreaker
               args:
-                name: menuCircuitBreaker
+                name: reviewCircuitBreaker
                 fallbackUri: forward:/service-fallback
-
+        - id: store-service
+          uri: ${STORE_SERVICE_URL:http://localhost:9007/stores}
+          predicates:
+            - Path=/stores/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: storeCircuitBreaker
+                fallbackUri: forward:/service-fallback
 resilience4j:
   circuitbreaker:
     configs:
@@ -71,5 +80,4 @@ resilience4j:
           seconds: 5
 
 sandit:
-  auth-service-url: http://localhost:9002
-  dispatcher-service-url: http://localhost:9005
+  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002}
