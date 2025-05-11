@@ -74,10 +74,20 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 5
         failure-rate-threshold: 50
         wait-duration-in-open-state: 15000
+    instances:
+      orderCircuitBreaker:
+        base-config: default
+        failure-rate-threshold: 70
+        wait-duration-in-open-state: 20s
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 10s
   timelimiter:
     configs:
       default:
         timeout-duration:
           seconds: 5
+    instances:
+      orderCircuitBreaker:
+        timeout-duration: 15s
 sandit:
   auth-service-url: http://localhost:9002
