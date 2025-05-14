@@ -7,7 +7,7 @@ spring:
     gateway:
       routes:
         - id: auth-service
-          uri: http://localhost:9002/auths
+          uri: ${AUTH_SERVICE_URL:http://localhost:9002/auths}
           predicates:
             - Path=/auths/**
           filters:
@@ -17,7 +17,7 @@ spring:
                 name: authCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: menu-service
-          uri: http://localhost:9003/menus
+          uri: ${MENU_SERVICE_URL:http://localhost:9003/menus}
           predicates:
             - Path=/menus/**
           filters:
@@ -27,7 +27,7 @@ spring:
                 name: menuCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: order-service
-          uri: http://localhost:9004/orders
+          uri: ${ORDER_SERVICE_URL:http://localhost:9004/orders}
           predicates:
             - Path=/orders/**
           filters:
@@ -36,27 +36,17 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/service-fallback
-        - id: dispatcher-service
-          uri: http://localhost:9005/dispatchers
+        - id: delivery-service
+          uri: ${DELIVERY_SERVICE_URL:http://localhost:9005/deliveries}
           predicates:
-            - Path=/dispatchers/**
+            - Path=/deliveries/**
           filters:
             - name: CircuitBreaker
               args:
-                name: dispatcherCircuitBreaker
+                name: deliveryCircuitBreaker
                 fallbackUri: forward:/service-fallback
-#        - id: review-service
-#          uri: http://localhost:9006/reviews
-#          predicates:
-#            - Path=/reviews/**
-#          filters:
-#            - name: PreGatewayFilter
-#            - name: CircuitBreaker
-#              args:
-#                name: menuCircuitBreaker
-#                fallbackUri: forward:/service-fallback
         - id: chat-service
-          uri: http://localhost:9006/chat
+          uri: ${CHAT_SERVICE_URL:http://localhost:9006/chat}
           predicates:
             - Path=/chat/**
           filters:
@@ -65,7 +55,16 @@ spring:
               args:
                 name: chatCircuitBreaker
                 fallbackUri: forward:/service-fallback
-
+        - id: store-service
+          uri: ${STORE_SERVICE_URL:http://localhost:9007/stores}
+          predicates:
+            - Path=/stores/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: storeCircuitBreaker
+                fallbackUri: forward:/service-fallback
 
 
 resilience4j:
@@ -75,11 +74,20 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 5
         failure-rate-threshold: 50
         wait-duration-in-open-state: 15000
+    instances:
+      orderCircuitBreaker:
+        base-config: default
+        failure-rate-threshold: 70
+        wait-duration-in-open-state: 20s
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 10s
   timelimiter:
     configs:
       default:
         timeout-duration:
           seconds: 5
+    instances:
+      orderCircuitBreaker:
+        timeout-duration: 15s
 sandit:
-  auth-service-url: http://localhost:9002
-  dispatcher-service-url: http://localhost:9005
+  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:9002}

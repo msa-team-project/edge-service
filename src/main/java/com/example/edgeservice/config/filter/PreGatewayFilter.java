@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,8 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
         return (exchange, chain) -> {
             // 요청 경로를 확인하여 로그인 및 회원가입 요청이라면 토큰 체크를 우회
             String path = exchange.getRequest().getURI().getPath();
+            HttpMethod method = exchange.getRequest().getMethod();
+
             log.info("Request path: {}", path);
 
             if (path.equals("/auths/login") ||
@@ -40,11 +43,12 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
                     path.equals("/auths/refresh") ||
                     path.equals("/auths/re/tokens") ||
                     path.startsWith("/auths/email") ||
-                    path.startsWith("/api/geocode") || 
-                    path.equals("/orders/prepare") || 
-                    path.equals("/orders/update-fail") || 
-                    path.equals("/orders/update-success")
-                    ) {
+                    path.startsWith("/api/geocode") ||
+                    path.equals("/orders/prepare") ||
+                    path.equals("/orders/update-fail") ||
+                    path.equals("/orders/update-success") ||
+                    path.startsWith("/auths/check-id")
+            ) {
                 // 로그인과 회원가입 요청에는 토큰 검증을 생략
                 return chain.filter(exchange);
             }
