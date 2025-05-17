@@ -65,7 +65,16 @@ spring:
               args:
                 name: storeCircuitBreaker
                 fallbackUri: forward:/service-fallback
-
+        - id: ai-service
+          uri: ${AI_SERVICE_URL:http://localhost:9008/api/ai}
+          predicates:
+            - Path=/ai/**
+          filters:
+            - name: PreGatewayFilter
+            - name: CircuitBreaker
+              args:
+                name: aiCircuitBreaker
+                fallbackUri: forward:/service-fallback
 
 resilience4j:
   circuitbreaker:
