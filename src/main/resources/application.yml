@@ -66,9 +66,9 @@ spring:
                 name: storeCircuitBreaker
                 fallbackUri: forward:/service-fallback
         - id: ai-service
-          uri: ${AI_SERVICE_URL:http://localhost:9008/api/ai}
+          uri: ${AI_SERVICE_URL:http://localhost:9008}
           predicates:
-            - Path=/ai/**
+            - Path=/api/ai/**
           filters:
             - name: PreGatewayFilter
             - name: CircuitBreaker
