@@ -71,10 +71,10 @@ spring:
             - Path=/api/ai/**
           filters:
             - name: PreGatewayFilter
-            - name: CircuitBreaker
-              args:
-                name: aiCircuitBreaker
-                fallbackUri: forward:/service-fallback
+           # - name: CircuitBreaker
+           #   args:
+           #     name: aiCircuitBreaker
+           #     fallbackUri: forward:/service-fallback
 
 resilience4j:
   circuitbreaker:
