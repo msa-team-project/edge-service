@@ -45,11 +45,6 @@ jobs:
         run: |
           aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name sandit-cluster
 
-      - name: Authenticate to EKS (generate token)
-        # EKS에 접근 가능한지 미리 토큰 요청해서 인증 상태 확인
-        run: |
-          aws eks get-token --region ${{ secrets.AWS_REGION }} --cluster-name sandit-cluster > /dev/null
-
       - name: Deploy to Kubernetes
         run: |
           kubectl apply --validate=false -f k8s/
