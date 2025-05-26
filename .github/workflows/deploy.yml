@@ -38,4 +38,4 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f k8s/
+          kubectl apply -f edge-service/k8s/
