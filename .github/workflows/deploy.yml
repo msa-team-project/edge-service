@@ -36,6 +36,20 @@ jobs:
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/edge-service:latest
 
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig for EKS cluster
+        run: |
+          aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name sandit-cluster
+
+      - name: Authenticate to EKS (generate token)
+        # EKS에 접근 가능한지 미리 토큰 요청해서 인증 상태 확인
+        run: |
+          aws eks get-token --region ${{ secrets.AWS_REGION }} --cluster-name sandit-cluster > /dev/null
+
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/
