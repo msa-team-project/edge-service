@@ -20,6 +20,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Create Kubernetes Secrets from GitHub Secrets
+        run: |
+          kubectl create secret generic order-service-secrets \
+            --from-literal=AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }} \
+            --dry-run=client -o yaml | kubectl apply --validate=false -f -
+
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -45,6 +51,14 @@ jobs:
         run: |
           aws eks --region ${{ secrets.AWS_REGION }} update-kubeconfig --name sandit-cluster
 
+      # 환경변수 치환을 위한 배포 파일 변환
+      - name: Substitute environment variables in deployment file
+        run: |
+          export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+          export AWS_REGION=${{ secrets.AWS_REGION }}
+          envsubst < k8s/deployment.yml > k8s/deployment.rendered.yml
+
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply --validate=false -f k8s/
+          kubectl apply -f k8s/deployment.rendered.yml
+          kubectl apply -f k8s/service.yml
