@@ -15,7 +15,7 @@ spec:
         role: main
       containers:
         - name: edge-service
-          image: 448049828702.dkr.ecr.ap-northeast-2.amazonaws.com/edge-service:latest #AWS 계정번호
+          image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/edge-service:latest #AWS 계정번호
           imagePullPolicy: Always
           lifecycle:
             preStop:
